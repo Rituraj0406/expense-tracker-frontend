@@ -10,10 +10,11 @@ import CustomDialog from "../../components/common/CustomDialog";
 import TransactionForm from "../../components/transactions/TransactionForm";
 import type { Transaction } from "../../features/transactions/transactionTypes";
 import { showSnackbar } from "../../features/snackbar/snackbarSlice";
+import Skeleton from "@mui/material/Skeleton";
 
 export default function Transactions() {
     const dispatch = useAppDispatch();
-    const { transactions, pages } = useAppSelector((state) => state.transaction);
+    const { transactions, pages, loading } = useAppSelector((state) => state.transaction);
 
     const [category, setCategory] = useState<string | null>("all");
 
@@ -122,25 +123,41 @@ export default function Transactions() {
 
     return (
         <div className="w-full flex flex-col">
-            <div className="w-full flex justify-end gap-4">
-                <Button variant="outlined" startIcon={<FileDownloadRoundedIcon />} onClick={handleExportCSV}>
+            <div className="w-full flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4">
+                <Button variant="outlined" startIcon={<FileDownloadRoundedIcon />} onClick={handleExportCSV} disabled={loading}>
                     Export CSV
                 </Button>
                 <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={handleAddTransactionModal}>
                     Add Transaction
                 </Button>
             </div>
-            <CustomToggleButtonGroup value={category} onChange={setCategory} options={options} />
-            <div className="mt-10">
-                <CustomTable
-                    columns={columns}
-                    rows={rows}
-                    page={page}
-                    totalPages={pages}
-                    onPageChange={setPage}
-                    onEdit={handleEditTransaction}
-                    onDelete={handleDelete}
-                />
+            <div className="mt-2">
+                <CustomToggleButtonGroup value={category} onChange={setCategory} options={options} />
+            </div>
+            <div className="mt-6 sm:mt-10">
+                {loading ? (
+                    <div className="flex flex-col gap-3">
+                        {[...Array(8)].map((_, i) => (
+                            <Skeleton
+                                key={i}
+                                variant="rectangular"
+                                height={50}
+                                className="rounded-md"
+                                animation="wave"
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <CustomTable
+                        columns={columns}
+                        rows={rows}
+                        page={page}
+                        totalPages={pages}
+                        onPageChange={setPage}
+                        onEdit={handleEditTransaction}
+                        onDelete={handleDelete}
+                    />
+                )}
             </div>
             {openDialog && (
                 <CustomDialog

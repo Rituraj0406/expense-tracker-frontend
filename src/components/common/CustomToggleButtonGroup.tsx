@@ -21,7 +21,17 @@ interface Props {
 }
 
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  display: "flex",
+  // flexWrap: "wrap", // 🔥 allow wrapping
   gap: "2rem",
+
+  [theme.breakpoints.up("sm")]: {
+    gap: "1rem",
+  },
+
+  [theme.breakpoints.up("md")]: {
+    gap: "2rem",
+  },
 
   [`& .${toggleButtonGroupClasses.firstButton}, & .${toggleButtonGroupClasses.middleButton}`]:
     {
@@ -74,6 +84,15 @@ const CustomToggleButtonGroup: React.FC<Props> = ({
           key={option.value}
           value={option.value}
           disabled={option.disabled}
+          sx={{
+            flex: {
+              xs: "1 1 100%",   // 📱 full width
+              sm: "1 1 auto",   // 📲 wrap
+              md: "unset",      // 💻 normal
+            },
+            justifyContent: "center",
+            whiteSpace: "nowrap",
+          }}
         >
           {option.icon || option.label}
         </ToggleButton>

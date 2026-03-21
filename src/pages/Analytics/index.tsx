@@ -1,4 +1,4 @@
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton, useMediaQuery, useTheme } from "@mui/material";
 import AnalyticsOverviewCards from "../../components/analytics/AnalyticsOverviewCards";
 import IncomeExpenseChart from "../../components/analytics/IncomeExpenseChart";
 import CategoryBreakdownChart from "../../components/analytics/CategoryBreakdownChart";
@@ -17,9 +17,9 @@ const OverviewSkeleton = () => (
       gridTemplateColumns: {
         xs: "1fr",
         sm: "1fr 1fr",
-        md: "1fr 1fr 1fr 1fr",
+        md: "repeat(4, 1fr)",
       },
-      gap: 2,
+      gap: { xs: 2, md: 3 },
     }}
   >
     {[...Array(4)].map((_, i) => (
@@ -28,106 +28,31 @@ const OverviewSkeleton = () => (
   </Box>
 );
 
+
 // 🔹 Chart Skeleton
-const ChartSkeleton = () => (
-  <Skeleton variant="rounded" animation="wave" height={300} />
+const ChartSkeleton = ({ height }: { height: number }) => (
+  <Skeleton variant="rounded" animation="wave" height={height} />
 );
 
 // 🔹 Table Skeleton
-const TableSkeleton = () => (
-  <Skeleton variant="rounded" animation="wave" height={300} />
+const TableSkeleton = ({ height }: { height: number }) => (
+  <Skeleton variant="rounded" animation="wave" height={height} />
 );
-
-// const MOCK_OVERVIEW = {
-//   totalIncome: 82000,
-//   totalExpenses: 61500,
-//   netSavings: 20500,
-//   totalTransactions: 42,
-// };
-
-// const MOCK_INCOME_EXPENSE = [
-//   { month: "Jan", income: 70000, expense: 52000 },
-//   { month: "Feb", income: 72000, expense: 48000 },
-//   { month: "Mar", income: 68000, expense: 53000 },
-//   { month: "Apr", income: 75000, expense: 60000 },
-//   { month: "May", income: 80000, expense: 61000 },
-//   { month: "Jun", income: 82000, expense: 61500 },
-// ];
-
-// const MOCK_CATEGORY_BREAKDOWN = [
-//   { name: "Housing", value: 22000 },
-//   { name: "Food", value: 12000 },
-//   { name: "Transport", value: 6500 },
-//   { name: "Entertainment", value: 4500 },
-//   { name: "Others", value: 6500 },
-// ];
-
-// const MOCK_TREND = [
-//   { month: "Jan", amount: 52000 },
-//   { month: "Feb", amount: 48000 },
-//   { month: "Mar", amount: 53000 },
-//   { month: "Apr", amount: 60000 },
-//   { month: "May", amount: 61000 },
-//   { month: "Jun", amount: 61500 },
-// ];
-
-// const MOCK_TOP_TRANSACTIONS = [
-//   {
-//     id: "1",
-//     icon: "🏠",
-//     description: "Rent - June",
-//     type: "expense" as const,
-//     category: "Housing",
-//     date: "01 Jun 2026",
-//     amount: 20000,
-//   },
-//   {
-//     id: "2",
-//     icon: "🛒",
-//     description: "Groceries",
-//     type: "expense" as const,
-//     category: "Food",
-//     date: "06 Jun 2026",
-//     amount: 6500,
-//   },
-//   {
-//     id: "3",
-//     icon: "🚗",
-//     description: "Car EMI",
-//     type: "expense" as const,
-//     category: "Transport",
-//     date: "10 Jun 2026",
-//     amount: 9000,
-//   },
-//   {
-//     id: "4",
-//     icon: "🎬",
-//     description: "Weekend outing",
-//     type: "expense" as const,
-//     category: "Entertainment",
-//     date: "14 Jun 2026",
-//     amount: 3500,
-//   },
-//   {
-//     id: "5",
-//     icon: "💊",
-//     description: "Medical bills",
-//     type: "expense" as const,
-//     category: "Health",
-//     date: "18 Jun 2026",
-//     amount: 8000,
-//   },
-// ];
 
 export default function Analytics() {
   const dispatch = useAppDispatch();
   const {data, loading} = useAppSelector((state) => state.analytics);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const month = new Date().toISOString().slice(0, 7);
 
   useEffect(() => {
     dispatch(fetchAnalytics(month));
   }, [dispatch, month]);
+
+  const chartHeight = isMobile ? 220 : isTablet ? 260 : 300;
 
   const topTransactionData = data?.topTransactions.map((item) => ({
     id: item?._id,
@@ -146,7 +71,7 @@ export default function Analytics() {
         width: "100%",
         display: "flex",
         flexDirection: "column",
-        gap: 3,
+        gap: { xs: 2, md: 3 },
       }}
     >
       {loading ? (
@@ -163,14 +88,19 @@ export default function Analytics() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "7fr 5fr" },
-          gap: 3,
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr",
+            md: "2fr 1fr",
+            lg: "7fr 5fr",
+          },
+          gap: { xs: 2, md: 3 },
         }}
       >
         {loading ? (
           <>
-            <ChartSkeleton/>
-            <ChartSkeleton/>
+            <ChartSkeleton height={chartHeight}/>
+            <ChartSkeleton height={chartHeight}/>
           </>
         ) : (
           <>
@@ -183,14 +113,14 @@ export default function Analytics() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "7fr 5fr" },
-          gap: 3,
+          gridTemplateColumns: "1fr", // 🔥 always vertical
+          gap: { xs: 2, md: 3 },
         }}
       >
         {loading ? (
           <>
-            <ChartSkeleton/>
-            <TableSkeleton/>
+            <ChartSkeleton height={chartHeight}/>
+            <TableSkeleton height={chartHeight}/>
           </>
         ) : (
           <>

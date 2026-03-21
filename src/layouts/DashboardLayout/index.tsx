@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import navConfig from "./navConfig";
+import { useTheme, useMediaQuery } from "@mui/material";
 
 export default function DashboardLayout() {
-  const [collapsed, setCollapsed] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [collapsed, setCollapsed] = useState(isMobile);
+  
+  useEffect(() => {
+    setCollapsed(isMobile);
+  }, [isMobile]);
+  
   const location = useLocation();
   const currentPage = navConfig.find(n => n.path === location.pathname);
 
@@ -18,7 +26,7 @@ export default function DashboardLayout() {
       <Box sx={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <TopBar onToggleSidebar={() => setCollapsed(c => !c)} />
 
-        <Box component="main" sx={{ flex: 1, overflowY: "auto", p: 3.5, width: '100%', maxWidth: 1200, mx: 'auto' }}>
+        <Box component="main" sx={{ flex: 1, overflowY: "auto", p: {xs: 2, sm: 3, md: 3.5}, width: '100%', maxWidth: 1200, mx: 'auto' }}>
           {/* Page heading */}
           <Box sx={{ mb: 3 }}>
             <Typography

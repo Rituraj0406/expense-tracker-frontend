@@ -77,7 +77,7 @@ const BudgetCard = ({ item, onEdit, onDelete }: BudgetCardProps) => {
         </Box>
 
         {/* Right Side */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flexShrink: 0 }}>
+        <Box className="justify-between" sx={{ display: "flex", alignItems: "center", gap: 1.5, flexShrink: 0 }}>
           <Chip
             label={cfg.label}
             size="small"
@@ -87,48 +87,50 @@ const BudgetCard = ({ item, onEdit, onDelete }: BudgetCardProps) => {
               bgcolor: cfg.bg,
             }}
           />
-          <IconButton
-            size="small"
-            onClick={() => onEdit(item)}
-            sx={{
-              borderRadius: 1.5,
-              bgcolor: "action.hover",
-            }}
-          >
-            <span role="img" aria-label="edit">
-              ✏️
-            </span>
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => onDelete(item._id)}
-            sx={{
-              borderRadius: 1.5,
-              bgcolor:
-                theme.palette.mode === "dark"
-                  ? "error.light"
-                  : "rgba(239, 68, 68, 0.08)",
-              color:
-                theme.palette.mode === "dark"
-                  ? "error.main"
-                  : "error.main",
-              border:
-                theme.palette.mode === "light"
-                  ? "1px solid rgba(239, 68, 68, 0.35)"
-                  : "none",
-              "&:hover": {
+          <div className='flex justify-end items-center gap-4'>
+            <IconButton
+              size="small"
+              onClick={() => onEdit(item)}
+              sx={{
+                borderRadius: 1.5,
+                bgcolor: "action.hover",
+              }}
+            >
+              <span role="img" aria-label="edit">
+                ✏️
+              </span>
+            </IconButton>
+            <IconButton
+              size="small"
+              onClick={() => onDelete(item._id)}
+              sx={{
+                borderRadius: 1.5,
                 bgcolor:
                   theme.palette.mode === "dark"
+                    ? "error.light"
+                    : "rgba(239, 68, 68, 0.08)",
+                color:
+                  theme.palette.mode === "dark"
                     ? "error.main"
-                    : "rgba(239, 68, 68, 0.16)",
-                color: "error.main",
-              },
-            }}
-          >
-            <span role="img" aria-label="delete">
-              🗑
-            </span>
-          </IconButton>
+                    : "error.main",
+                border:
+                  theme.palette.mode === "light"
+                    ? "1px solid rgba(239, 68, 68, 0.35)"
+                    : "none",
+                "&:hover": {
+                  bgcolor:
+                    theme.palette.mode === "dark"
+                      ? "error.main"
+                      : "rgba(239, 68, 68, 0.16)",
+                  color: "error.main",
+                },
+              }}
+            >
+              <span role="img" aria-label="delete">
+                🗑
+              </span>
+            </IconButton>
+          </div>
         </Box>
       </Box>
 
