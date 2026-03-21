@@ -1,44 +1,53 @@
 import './App.css'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Box } from '@mui/material';
-import Login from './pages/Login'
 import RequireAuth from './components/auth/RequireAuth'
-import Signup from './pages/SignUp'
-// import Dashboard from './components/Dashboard'
 import CustomSnackbar from './components/common/Snackbar'
-import Home from './pages/Home';
+import { lazy, Suspense } from 'react';
 import DashboardLayout from './layouts/DashboardLayout'
-import Transactions from './pages/Transactions';
-import Budgets from './pages/Budgets';
-import Settings from './pages/Settings';
-import Analytics from './pages/Analytics';
+// import Transactions from './pages/Transactions';
+// import Budgets from './pages/Budgets';
+// import Settings from './pages/Settings';
+// import Analytics from './pages/Analytics';
+
+// 🔥 Lazy loaded pages
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/SignUp'));
+const Home = lazy(() => import('./pages/Home'));
+const Transactions = lazy(() => import('./pages/Transactions'));
+const Budgets = lazy(() => import('./pages/Budgets'));
+const Settings = lazy(() => import('./pages/Settings'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+
 
 function App() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <RequireAuth>
-              <DashboardLayout />
-            </RequireAuth>
-          }
-        >
-          <Route index element={<Home />} />
-          <Route path="transactions" element={<Transactions />} />
-          <Route path="budget" element={<Budgets />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          {/* Protected routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <DashboardLayout />
+              </RequireAuth>
+            }
+          >
+            <Route index element={<Home />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="budget" element={<Budgets />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Suspense>
       <CustomSnackbar/>
     </Box>
   )
