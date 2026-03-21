@@ -44,7 +44,7 @@ const CustomDialog = ({
     return (
         <Dialog
             open={open}
-            onClose={(event, reason) => {
+            onClose={(reason) => {
                 if(loading) return;
                 if(reason === "backdropClick" || reason === "escapeKeyDown"){
                     onClose();
