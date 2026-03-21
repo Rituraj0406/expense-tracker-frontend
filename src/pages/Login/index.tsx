@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useGoogleLogin } from '@react-oauth/google';
 import { googleLogin } from '../../features/auth/authSlice';
+import { showSnackbar } from '../../features/snackbar/snackbarSlice';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -24,11 +25,12 @@ const Login = () => {
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async(tokenResponse) => {
       try {
-        const res = await dispatch(googleLogin(tokenResponse.access_token)).unwrap();
-        console.log("Google login success:", res);
+        await dispatch(googleLogin(tokenResponse.access_token)).unwrap();
+        dispatch(showSnackbar({ message: 'Login Successful', severity: 'success' }));
         navigate('/dashboard')
       } catch (error) {
         console.log('error', error);
+        dispatch(showSnackbar({ message: error, severity: 'error' }));
       }
     },
     onError: () => {
