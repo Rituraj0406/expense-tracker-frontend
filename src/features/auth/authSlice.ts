@@ -22,7 +22,6 @@ const initialState: AuthState = {
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (data: { email: string; password: string }) => {
-    console.log()
     const response = await API.post('/auth/login', data);
     // some backends wrap the user object, e.g. { user: {...}, token: '...' }
     const payload = response.data.user ? response.data.user : response.data;
@@ -34,6 +33,22 @@ export const loginUser = createAsyncThunk(
     return payload;
   }
 );
+
+// Async thunk for user login using google api
+export const googleLogin = createAsyncThunk(
+  'auth/googleLogin',
+  async(access_token: string, {rejectWithValue}) => {
+    try {
+      const response = await API.post('/auth/google', {
+        access_token,
+      });
+      return response.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Google login failed")
+    }
+  }
+)
 
 // Async thunk for user registration
 export const registerUser = createAsyncThunk(
@@ -121,7 +136,6 @@ export const updateBudgetPreferences = createAsyncThunk(
   }
 )
 
-// updated appearance
 // UPDATE appearance
 export const updateAppearance = createAsyncThunk(
   "auth/updateAppearance",
@@ -165,6 +179,24 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state) => {
         state.loading = false;
         state.error = 'Login failed';
+      })
+      .addCase(googleLogin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = {
+          _id: action.payload._id,
+          name: action.payload.name,
+          email: action.payload.email,
+          token: action.payload.token
+        };
+
+
+        localStorage.setItem('token', action.payload.token);
+      })
+      .addCase(googleLogin.rejected, (state) => {
+        state.loading = false;
       })
       .addCase(registerUser.pending, (state) => {
         state.loading = true;

@@ -28,8 +28,6 @@ export default function Sidebar({ collapsed }: SidebarProps) {
   console.debug('sidebar auth user', user);
   // user could be the object itself or wrapped in a `user` field
   const userName = user?.name ?? (user as any)?.user?.name;  // eslint-disable-line @typescript-eslint/no-explicit-any
-
-  console.log('print user:-', user);
   
   return (
     <Drawer

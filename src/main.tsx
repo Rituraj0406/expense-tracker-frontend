@@ -5,17 +5,20 @@ import { Provider } from 'react-redux'
 import { store } from './store/store.ts'
 import { BrowserRouter } from 'react-router-dom'
 import ThemeModeProvider from './theme/ThemeModeProvider';
-import { AccentProvider } from './theme/AccentContext.tsx'
+import { AccentProvider } from './theme/AccentContext.tsx';
+import {GoogleOAuthProvider} from '@react-oauth/google';
 
 createRoot(document.getElementById('root')!).render(
-  <Provider store={store}>
-    <AccentProvider>
-      <ThemeModeProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ThemeModeProvider>
-    </AccentProvider>
-  </Provider>,
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <Provider store={store}>
+      <AccentProvider>
+        <ThemeModeProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ThemeModeProvider>
+      </AccentProvider>
+    </Provider>
+  </GoogleOAuthProvider>
 )
 

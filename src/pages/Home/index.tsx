@@ -21,7 +21,6 @@ export default function Home() {
     dispatch(fetchBudgetSummary(month));
   }, [dispatch, month]);
 
-  console.log('print analytics dataL--', data);
   return (
     <Box display="flex" flexDirection="column" gap={3}>
       

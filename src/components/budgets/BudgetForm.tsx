@@ -66,7 +66,6 @@ const BudgetForm = ({ mode, onCancel, initialData }: BudgetFormProps) => {
                 }
                 onCancel?.();
             } catch (error) {
-                console.log('print error:-', error);
                 const message =
                     typeof error === "string"
                         ? error

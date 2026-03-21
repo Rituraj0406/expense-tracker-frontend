@@ -4,10 +4,13 @@ import LoginForm from '../../components/auth/LoginForm';
 import Divider from '@mui/material/Divider';
 import { Button, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import GoogleIcon from '@mui/icons-material/Google';
+import { useGoogleLogin } from '@react-oauth/google';
+import { googleLogin } from '../../features/auth/authSlice';
 
 const Login = () => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.auth.user);
   const navigate = useNavigate();
 
@@ -17,6 +20,22 @@ const Login = () => {
       navigate('/dashboard', { replace: true });
     }
   }, [user, navigate]);
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async(tokenResponse) => {
+      try {
+        const res = await dispatch(googleLogin(tokenResponse.access_token)).unwrap();
+        console.log("Google login success:", res);
+        navigate('/dashboard')
+      } catch (error) {
+        console.log('error', error);
+      }
+    },
+    onError: () => {
+      console.log("Google login failed");
+    }
+  })
+  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4">
@@ -35,7 +54,18 @@ const Login = () => {
         <LoginForm />
         <Divider variant="middle" sx={{ margin: 0, color: 'gray' }}>Or</Divider>
         <div className="flex gap-2">
-          <Button variant="outlined" color="primary" fullWidth sx={{ borderRadius: 20, textTransform: 'none', display: 'flex', gap: 1 }}>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            fullWidth 
+            sx={{ 
+              borderRadius: 20, 
+              textTransform: 'none', 
+              display: 'flex', 
+              gap: 1 
+            }}
+            onClick={() => handleGoogleLogin()}
+          >
             <GoogleIcon sx={{ fontSize: 20 }} /> Sign in with Google
           </Button>
         </div>
