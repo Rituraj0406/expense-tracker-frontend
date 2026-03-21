@@ -1,8 +1,8 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import API from "../../services/api";
-import type {Transaction, TransactionPayload} from './transactionTypes';
+import type { Transaction, TransactionPayload } from './transactionTypes';
 
-interface TransactionState{
+interface TransactionState {
     transactions: Transaction[];
     loading: boolean;
     error: string | null;
@@ -21,7 +21,7 @@ const initialState: TransactionState = {
 // fetch all
 export const fetchTransactions = createAsyncThunk(
     'transactions/fetch',
-    async ({page = 1, limit = 10}: {page?: number; limit?: number}) => {
+    async ({ page = 1, limit = 10 }: { page?: number; limit?: number }) => {
         const response = await API.get(`/transactions?page=${page}&limit=${limit}`);
         return response.data;
     }
@@ -30,12 +30,12 @@ export const fetchTransactions = createAsyncThunk(
 // create
 export const createTransactions = createAsyncThunk(
     'transaction/create',
-    async(data: TransactionPayload, {rejectWithValue}) => {
-        try{
+    async (data: TransactionPayload, { rejectWithValue }) => {
+        try {
             const response = await API.post('/transactions', data);
             return response.data;
-        } catch(err: unknown){
-            const error = err as {response?: {data?: {message?: string}}};
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { message?: string } } };
             return rejectWithValue(error.response?.data?.message || 'Failed to create');
         }
     }
@@ -43,31 +43,49 @@ export const createTransactions = createAsyncThunk(
 
 // update
 export const updateTransaction = createAsyncThunk(
-  'transactions/update',
-  async ({ id, data }: { id: string; data: Partial<TransactionPayload> }, { rejectWithValue }) => {
-    try {
-      const response = await API.put(`/transactions/${id}`, data);
-      return response.data;
-    } catch (err: unknown) {
-        const error = err as {response?: {data?: {message?: string}}};
-      return rejectWithValue(error.response?.data?.message || 'Failed to update');
+    'transactions/update',
+    async ({ id, data }: { id: string; data: Partial<TransactionPayload> }, { rejectWithValue }) => {
+        try {
+            const response = await API.put(`/transactions/${id}`, data);
+            return response.data;
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { message?: string } } };
+            return rejectWithValue(error.response?.data?.message || 'Failed to update');
+        }
     }
-  }
 );
 
 // delete
 export const deleteTransaction = createAsyncThunk(
     'transactions/delete',
-    async(id: string, {rejectWithValue}) => {
-        try{
+    async (id: string, { rejectWithValue }) => {
+        try {
             await API.delete(`/transactions/${id}`);
             return id;
-        } catch(err: unknown) {
-            const error = err as {response?: {data?: {message?: string}}};
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { message?: string } } };
             return rejectWithValue(error.response?.data?.message || 'Failed to delete');
         }
     }
 );
+
+export const exportTransactionsCSV = createAsyncThunk(
+    'transaction/exportCSV',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await API.get("/transactions/export", {
+                responseType: "blob", // 🔥 VERY IMPORTANT
+            });
+
+            return response.data;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data?.message || "Failed to export CSV"
+            );
+        }
+    }
+)
 
 const transactionSlice = createSlice({
     name: 'transaction',
@@ -112,7 +130,7 @@ const transactionSlice = createSlice({
             .addCase(updateTransaction.fulfilled, (state, action) => {
                 state.loading = false;
                 const index = state.transactions.findIndex(t => t._id === action.payload._id);
-                if(index !== -1) state.transactions[index] = action.payload;
+                if (index !== -1) state.transactions[index] = action.payload;
             })
             .addCase(updateTransaction.rejected, (state, action) => {
                 state.loading = false;

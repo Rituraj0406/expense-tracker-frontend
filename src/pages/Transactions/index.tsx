@@ -5,7 +5,7 @@ import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import CustomTable from "../../components/common/CustomTable";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { deleteTransaction, fetchTransactions } from "../../features/transactions/transactionSlice";
+import { deleteTransaction, exportTransactionsCSV, fetchTransactions } from "../../features/transactions/transactionSlice";
 import CustomDialog from "../../components/common/CustomDialog";
 import TransactionForm from "../../components/transactions/TransactionForm";
 import type { Transaction } from "../../features/transactions/transactionTypes";
@@ -94,10 +94,36 @@ export default function Transactions() {
         }
     }
 
+    const handleExportCSV = async () => {
+        try {
+            const blob = await dispatch(exportTransactionsCSV()).unwrap();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "transactions.csv";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            dispatch(
+                showSnackbar({ message: "CSV downloaded successfully", severity: "success" })
+            );
+        } catch (err) {
+            const errorMessage =
+                err instanceof Error ? err.message : "Export failed";
+
+            dispatch(
+                showSnackbar({ message: errorMessage, severity: "error" })
+            );
+        }
+    };
+
     return (
         <div className="w-full flex flex-col">
             <div className="w-full flex justify-end gap-4">
-                <Button variant="outlined" startIcon={<FileDownloadRoundedIcon />}>
+                <Button variant="outlined" startIcon={<FileDownloadRoundedIcon />} onClick={handleExportCSV}>
                     Export CSV
                 </Button>
                 <Button variant="contained" startIcon={<AddRoundedIcon />} onClick={handleAddTransactionModal}>
