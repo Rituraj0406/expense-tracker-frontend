@@ -21,6 +21,30 @@ const InfoCards = ({icon, label, value, color, sub}: InfoCardProps) => {
                 display: "flex",
                 alignItems: "center",
                 gap: 2,
+                border: `1px solid ${theme.palette.divider}`,
+                bgcolor: theme.palette.background.paper,
+
+                // ✨ Animation
+                transition: "all 0.25s ease",
+                position: "relative",
+                overflow: "hidden",
+
+                "&:hover": {
+                    transform: "translateY(-6px) scale(1.02)",
+                    boxShadow: `0 10px 30px ${theme.palette.primary.main}20`,
+                },
+                // ✨ Gradient Glow
+                "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    inset: 0,
+                    // background: `linear-gradient(135deg, ${c.color}20, transparent)`,
+                    opacity: 0,
+                    transition: "0.3s",
+                },
+                "&:hover::before": {
+                    opacity: 1,
+                },
             }}
         >
             <Box
