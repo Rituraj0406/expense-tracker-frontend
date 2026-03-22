@@ -19,24 +19,28 @@ export default function OverviewCards({ data, loading }: any) {
             value: data?.totalIncome,
             icon: <TrendingUpIcon />,
             color: theme.palette.success.main,
+            isCurrency: true
         },
         {
             label: "Expenses",
             value: data?.totalExpenses,
             icon: <TrendingDownIcon />,
             color: theme.palette.error.main,
+            isCurrency: true
         },
         {
             label: "Savings",
             value: data?.netSavings,
             icon: <AccountBalanceWalletIcon />,
             color: theme.palette.primary.main,
+            isCurrency: true
         },
         {
             label: "Transactions",
             value: data?.totalTransactions,
             icon: <ReceiptLongIcon />,
             color: theme.palette.warning.main,
+            isCurrency: false
         },
     ];
 
@@ -123,7 +127,8 @@ export default function OverviewCards({ data, loading }: any) {
                                 color: c.color,
                             }}
                         >
-                            ₹{c.value?.toLocaleString() || 0}
+                            {c.isCurrency ? "₹" : ""}
+                            {c.value?.toLocaleString() || 0}
                         </Typography>
                     )}
 
