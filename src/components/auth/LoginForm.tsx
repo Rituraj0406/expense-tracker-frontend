@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from '@mui/material'
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../hooks/reduxHooks';
 import { loginUser } from '../../features/auth/authSlice';
 import { showSnackbar } from '../../features/snackbar/snackbarSlice';
@@ -66,6 +66,12 @@ const LoginForm = () => {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
+        <Link 
+          to="/forgot-password"
+          className='text-base text-blue-400 underline'
+        >
+          Forgot Password?
+        </Link>
         <Button variant='contained' type='submit' disabled={formik.isSubmitting}>
           {formik.isSubmitting ? 'Logging in...' : 'Login'}
         </Button>

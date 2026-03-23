@@ -22,6 +22,7 @@ interface IncomeExpenseChartProps {
 
 export default function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
   const theme = useTheme();
+  const isEmpty = !data || data.length === 0;
 
   return (
     <Box
@@ -44,46 +45,63 @@ export default function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
       >
         Income vs Expense
       </Typography>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} barCategoryGap={24}>
-          <CartesianGrid
-            stroke={theme.palette.divider}
-            strokeDasharray="3 3"
-            vertical={false}
-          />
-          <XAxis
-            dataKey="month"
-            stroke={theme.palette.text.secondary}
-            tickLine={false}
-          />
-          <YAxis
-            stroke={theme.palette.text.secondary}
-            tickLine={false}
-            tickFormatter={(v) => `₹${v / 1000}k`}
-          />
-          <Tooltip
-            contentStyle={{
-              background: theme.palette.background.paper,
-              borderRadius: 12,
-              border: `1px solid ${theme.palette.divider}`,
-            }}
-            formatter={(value: number | undefined) => [`₹${(value ?? 0).toLocaleString()}`, ""]}
-          />
-          <Legend />
-          <Bar
-            dataKey="income"
-            name="Income"
-            fill={theme.palette.success.main}
-            radius={[8, 8, 0, 0]}
-          />
-          <Bar
-            dataKey="expense"
-            name="Expense"
-            fill={theme.palette.error.main}
-            radius={[8, 8, 0, 0]}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+      {isEmpty ? (
+        <Box sx={{
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          gap: 1,
+        }}>
+          <Typography fontSize={28}>📊</Typography>
+          <Typography fontWeight={600}>No Income/Expense Data</Typography>
+          <Typography variant="caption" color="text.secondary">
+            Add transactions to visualize data
+          </Typography>
+        </Box>
+      ) : (
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} barCategoryGap={24}>
+            <CartesianGrid
+              stroke={theme.palette.divider}
+              strokeDasharray="3 3"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="month"
+              stroke={theme.palette.text.secondary}
+              tickLine={false}
+            />
+            <YAxis
+              stroke={theme.palette.text.secondary}
+              tickLine={false}
+              tickFormatter={(v) => `₹${v / 1000}k`}
+            />
+            <Tooltip
+              contentStyle={{
+                background: theme.palette.background.paper,
+                borderRadius: 12,
+                border: `1px solid ${theme.palette.divider}`,
+              }}
+              formatter={(value: number | undefined) => [`₹${(value ?? 0).toLocaleString()}`, ""]}
+            />
+            <Legend />
+            <Bar
+              dataKey="income"
+              name="Income"
+              fill={theme.palette.success.main}
+              radius={[8, 8, 0, 0]}
+            />
+            <Bar
+              dataKey="expense"
+              name="Expense"
+              fill={theme.palette.error.main}
+              radius={[8, 8, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </Box>
   );
 }

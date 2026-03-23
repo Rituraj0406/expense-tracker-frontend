@@ -5,6 +5,8 @@ import RequireAuth from './components/auth/RequireAuth'
 import CustomSnackbar from './components/common/Snackbar'
 import { lazy, Suspense } from 'react';
 import DashboardLayout from './layouts/DashboardLayout'
+import ForgetPassword from './components/auth/ForgetPassword';
+import ResetPassword from './components/auth/ResetPassword';
 // import Transactions from './pages/Transactions';
 // import Budgets from './pages/Budgets';
 // import Settings from './pages/Settings';
@@ -29,6 +31,8 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgetPassword/>}/>
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           {/* Protected routes */}
           <Route
             path="/dashboard"

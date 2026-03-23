@@ -154,6 +154,40 @@ export const updateAppearance = createAsyncThunk(
   }
 );
 
+// forgot password share link to email
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const res = await API.post("/auth/forgot-password", { email });
+      return res.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to send reset link"
+      );
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  'auth/resetPassword',
+  async(data: {token: string, password: string, confirmPassword: string}, {rejectWithValue}) => {
+    try {
+      const res = await API.put(`/auth/reset-password/${data.token}`, 
+        {
+          password: data.password,
+          confirmPassword: data.confirmPassword
+        }
+      )
+      return res.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Reset failed");
+    }
+  }
+)
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -191,7 +225,6 @@ const authSlice = createSlice({
           email: action.payload.email,
           token: action.payload.token
         };
-
 
         localStorage.setItem('token', action.payload.token);
       })
@@ -258,6 +291,28 @@ const authSlice = createSlice({
       })
       .addCase(updateAppearance.fulfilled, (state, action) => {
         state.preferences = action.payload;
+      })
+      // forgot password
+      .addCase(forgotPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // reset password
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

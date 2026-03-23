@@ -23,6 +23,7 @@ export default function CategoryBreakdownChart({
   data,
 }: CategoryBreakdownChartProps) {
   const theme = useTheme();
+  const isEmpty = !data || data.length === 0;
 
   return (
     <Box
@@ -45,47 +46,66 @@ export default function CategoryBreakdownChart({
       >
         Category Breakdown
       </Typography>
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            innerRadius={70}
-            outerRadius={100}
-            paddingAngle={3}
-          >
-            {data.map((entry, index) => (
-              <Cell
-                key={entry.name}
-                fill={
-                  DEFAULT_COLORS[index % DEFAULT_COLORS.length] ||
-                  theme.palette.primary.main
-                }
-              />
-            ))}
-          </Pie>
-          <Tooltip
-            contentStyle={{
-              background: theme.palette.background.paper,
-              borderRadius: 12,
-              border: `1px solid ${theme.palette.divider}`,
-              color: theme.palette.text.primary, // ✅ FIX
-            }}
-            itemStyle={{
-              color: theme.palette.text.primary, // ✅ FIX
-            }}
-            labelStyle={{
-              color: theme.palette.text.secondary, // ✅ FIX
-            }}
-            formatter={(value: number | undefined, name: string | undefined) => [
-              `₹${(value ?? 0).toLocaleString()}`,
-              name,
-            ]}
-          />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
+      {isEmpty ? (
+        <Box
+          sx={{
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            gap: 1,
+          }}
+        >
+          <Typography fontSize={28}>🍩</Typography>
+          <Typography fontWeight={600}>No Category Data</Typography>
+          <Typography variant="caption" color="text.secondary">
+            Add expenses to see breakdown
+          </Typography>
+        </Box>
+      ) : (
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={70}
+              outerRadius={100}
+              paddingAngle={3}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={entry.name}
+                  fill={
+                    DEFAULT_COLORS[index % DEFAULT_COLORS.length] ||
+                    theme.palette.primary.main
+                  }
+                />
+              ))}
+            </Pie>
+            <Tooltip
+              contentStyle={{
+                background: theme.palette.background.paper,
+                borderRadius: 12,
+                border: `1px solid ${theme.palette.divider}`,
+                color: theme.palette.text.primary, // ✅ FIX
+              }}
+              itemStyle={{
+                color: theme.palette.text.primary, // ✅ FIX
+              }}
+              labelStyle={{
+                color: theme.palette.text.secondary, // ✅ FIX
+              }}
+              formatter={(value: number | undefined, name: string | undefined) => [
+                `₹${(value ?? 0).toLocaleString()}`,
+                name,
+              ]}
+            />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      )}
     </Box>
   );
 }

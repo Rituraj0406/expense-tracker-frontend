@@ -25,6 +25,7 @@ const columns = [
 export default function TopTransactionsTable({
   rows,
 }: TopTransactionsTableProps) {
+  const isEmpty = !rows || rows.length === 0;
   return (
     <Box sx={{ width: "100%" }}>
       <Typography
@@ -38,15 +39,39 @@ export default function TopTransactionsTable({
       >
         Top Transactions
       </Typography>
-      <CustomTable
-        columns={columns}
-        rows={rows}
-        page={1}
-        totalPages={1}
-        onPageChange={() => {}}
-        onEdit={() => {}}
-        onDelete={() => {}}
-      />
+      {isEmpty ? (
+        <Box
+          sx={{
+            height: 200,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+            borderRadius: 2,
+            border: "1px dashed",
+            borderColor: "divider",
+            bgcolor: "#ffffff"
+          }}
+        >
+          <Typography fontSize={28}>🧾</Typography>
+          <Typography fontWeight={600}>No Transactions</Typography>
+          <Typography variant="caption" color="text.secondary">
+            Top transactions will appear here
+          </Typography>
+        </Box>
+      ) : (
+
+        <CustomTable
+          columns={columns}
+          rows={rows}
+          page={1}
+          totalPages={1}
+          onPageChange={() => { }}
+          onEdit={() => { }}
+          onDelete={() => { }}
+        />
+      )}
     </Box>
   );
 }

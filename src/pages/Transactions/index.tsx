@@ -11,6 +11,7 @@ import TransactionForm from "../../components/transactions/TransactionForm";
 import type { Transaction } from "../../features/transactions/transactionTypes";
 import { showSnackbar } from "../../features/snackbar/snackbarSlice";
 import Skeleton from "@mui/material/Skeleton";
+import { Box, Typography } from "@mui/material";
 
 export default function Transactions() {
     const dispatch = useAppDispatch();
@@ -39,7 +40,7 @@ export default function Transactions() {
     ];
 
     useEffect(() => {
-        dispatch(fetchTransactions({page, limit: 10}));
+        dispatch(fetchTransactions({ page, limit: 10 }));
     }, [dispatch, page]);
 
     const filteredTransactions = useMemo(() => {
@@ -67,7 +68,7 @@ export default function Transactions() {
 
     const handleEditTransaction = (id: string) => {
         const txn = transactions.find(t => t._id === id);
-        if(!txn) return;
+        if (!txn) return;
         setDialogMode('edit');
         setSelectedTransaction(txn);
         setOpenDialog(true);
@@ -75,23 +76,23 @@ export default function Transactions() {
 
     const handleDelete = (id: string) => {
         const txn = transactions.find(t => t._id === id);
-        if(!txn) return;
+        if (!txn) return;
         setSelectedTransaction(txn);
         setConfirmDialog(true);
     }
 
     const handleDeleteTransaction = async () => {
-        if(!selectedTransaction) return;
+        if (!selectedTransaction) return;
 
-        try{
+        try {
             await dispatch(deleteTransaction(selectedTransaction?._id)).unwrap();
-            dispatch(showSnackbar({message: "Transaction deleted successfully", severity: "success"}));
+            dispatch(showSnackbar({ message: "Transaction deleted successfully", severity: "success" }));
 
             setConfirmDialog(false);
             setSelectedTransaction(null);
-        } catch (err){
+        } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Failed to delete transaction";
-            dispatch(showSnackbar({message: errorMessage, severity: "error"}));
+            dispatch(showSnackbar({ message: errorMessage, severity: "error" }));
         }
     }
 
@@ -147,6 +148,34 @@ export default function Transactions() {
                             />
                         ))}
                     </div>
+                ) : rows.length === 0 ? (
+                    <Box
+                        sx={{
+                            height: 200,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 1,
+                            borderRadius: 2,
+                            border: "1px dashed",
+                            borderColor: "divider",
+                            bgcolor: "#ffffff"
+                        }}
+                    >
+                        {/* Icon */}
+                        <div className="text-3xl">📭</div>
+
+                        {/* Title */}
+                        <Typography fontWeight={600}>
+                            No Transactions Found
+                        </Typography>
+
+                        {/* Subtext */}
+                        <Typography variant="caption" color="text.secondary">
+                            Start by adding your first transaction
+                        </Typography>
+                    </Box>
                 ) : (
                     <CustomTable
                         columns={columns}
@@ -163,16 +192,16 @@ export default function Transactions() {
                 <CustomDialog
                     open={openDialog}
                     onClose={() => setOpenDialog(false)}
-                    title={dialogMode ==="create" ? "New Transaction" : "Update Transaction" }
+                    title={dialogMode === "create" ? "New Transaction" : "Update Transaction"}
                     showActions={false}
                 >
-                    <TransactionForm 
+                    <TransactionForm
                         mode={dialogMode}
-                        initialData={selectedTransaction} 
+                        initialData={selectedTransaction}
                         onCancel={() => {
-                            setOpenDialog(false); 
+                            setOpenDialog(false);
                             setSelectedTransaction(null)
-                            }
+                        }
                         }
                     />
                 </CustomDialog>
@@ -190,6 +219,6 @@ export default function Transactions() {
                 />
             )}
         </div>
-        
+
     )
 }

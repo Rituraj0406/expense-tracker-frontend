@@ -7,10 +7,25 @@ const API = axios.create({
 
 API.interceptors.request.use((req) => {
     const token = localStorage.getItem("token");
-    if(token) {
+
+    // 🔥 Public routes (no token needed)
+    const publicRoutes = [
+        "/auth/login",
+        "/auth/register",
+        "/auth/google",
+        "/auth/forgot-password",
+        "/auth/reset-password",
+    ];
+
+    if (publicRoutes.some((route) => req.url?.includes(route))) {
+        return req;
+    }
+
+    if (token) {
         req.headers.Authorization = `Bearer ${token}`;
     }
+
     return req;
-})
+});
 
 export default API;

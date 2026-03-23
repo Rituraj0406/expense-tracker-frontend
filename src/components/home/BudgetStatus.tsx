@@ -23,8 +23,38 @@ export default function BudgetStatus({ loading, budgets }: BudgetStatusProps) {
 
     if (!budgets || budgets.length === 0) {
         return (
-            <Box p={3} borderRadius={3} border="1px solid" borderColor="divider">
-                <Typography>No budgets found</Typography>
+            <Box
+                sx={(theme) => ({
+                    p: 4,
+                    borderRadius: 3,
+                    border: `1px solid ${theme.palette.divider}`,
+                    bgcolor: theme.palette.background.paper,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1.5,
+                    textAlign: "center",
+                    minHeight: 180,
+                })}
+            >
+                {/* Icon / Emoji */}
+                <Typography fontSize={28}>💸</Typography>
+
+                {/* Title */}
+                <Typography
+                    sx={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                    }}
+                >
+                    No Budgets Yet
+                </Typography>
+
+                {/* Subtext */}
+                <Typography variant="caption" color="text.secondary">
+                    Start by adding a budget to track your spending
+                </Typography>
             </Box>
         );
     }

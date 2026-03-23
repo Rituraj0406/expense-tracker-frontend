@@ -1,14 +1,15 @@
 import React from 'react';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+// import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LoginForm from '../../components/auth/LoginForm';
 import Divider from '@mui/material/Divider';
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useGoogleLogin } from '@react-oauth/google';
 import { googleLogin } from '../../features/auth/authSlice';
 import { showSnackbar } from '../../features/snackbar/snackbarSlice';
+import SpendlyLogo from '../../assets/Gemini_Generated_Image_fbrgafbrgafbrgaf-removebg-preview.png';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -41,16 +42,8 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4">
-      <div className="flex items-center gap-2 mb-6">
-        <AccountBalanceWalletIcon fontSize="large" />
-        <Typography
-          sx={(theme) => ({
-            fontSize: 24,
-            color: theme.palette.text.primary,
-            fontWeight: theme.typography.fontWeightBold || 700
-          })}>
-          Expense.io
-        </Typography>
+      <div className="flex items-center gap-2 mb-6 justify-center">
+        <img alt='logo' src={SpendlyLogo} className='w-[30%]'/>
       </div>
       <div className="w-full max-w-md shadow-lg shadow-blue-500 p-6 rounded-xl flex flex-col gap-4">
         <LoginForm />
